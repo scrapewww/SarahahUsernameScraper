@@ -11,11 +11,6 @@ curl_close($curl);
 preg_match_all('#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $response, $match);
 $check = [];
 $existing = file('collected.txt', FILE_IGNORE_NEW_LINES);
-foreach( $existing AS $e )
-{
-    $pieces = explode('|', $e);
-    $check[] = $pieces[0];
-}
 $usernames = [];
 $file = fopen('collected.txt', 'a');
 foreach( array_unique( $match[0] ) AS $url )
@@ -23,12 +18,12 @@ foreach( array_unique( $match[0] ) AS $url )
     if( strpos( $url, '.sarahah.com' ) !== false )
     {
         $pieces = explode('.', str_replace(['http://','https://'],'',$url));
-        if( $pieces[0] != 'www' && !in_array($pieces[0],$check) ) $usernames[] = $pieces[0];
+        if( $pieces[0] != 'www' && !in_array($pieces[0],$existing) ) $usernames[] = $pieces[0];
     }
 }
 foreach( array_unique( $usernames ) AS $username )
 {
-    fwrite($file, $username."|0\n");
+    fwrite($file, $username."\n");
 }
 fclose($file);
 print 'done';
